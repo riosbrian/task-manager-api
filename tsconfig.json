@@ -11,7 +11,7 @@
     "target": "esnext",
     // For nodejs:
     "lib": ["esnext"],
-    "types": ["node"],
+    "types": ["node", "vitest/globals"],
 
     // Other Outputs
     "sourceMap": true,
@@ -42,5 +42,7 @@
     "paths": {
       "@/*": ["./src/*"]
     }
-  }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }
