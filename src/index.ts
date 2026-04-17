@@ -1,18 +1,4 @@
-import express, { type Express } from "express";
-import cors from "cors";
+import { envs } from "@/config/envs.js";
+import { run } from "@/server/app.js";
 
-const app: Express = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(cors());
-app.use(express.json());
-
-app.get("/", (_req, res) => {
-  res.json({ message: "Task Manager API" });
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-export default app;
+(async () => await run(envs.PORT))();
