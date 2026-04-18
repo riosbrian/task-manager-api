@@ -24,5 +24,5 @@ export interface TaskRepository {
   create: (input: CreateTaskInput) => Promise<Task>;
   find: () => Promise<Task[]>;
   findByIdAndUpdate: (id: string, input: UpdateTaskInput) => Promise<Task>;
-  findByIdAndDelete: (id: string) => Promise<void>;
+  findByIdAndDelete: (id: string) => Promise<Task>;
 }

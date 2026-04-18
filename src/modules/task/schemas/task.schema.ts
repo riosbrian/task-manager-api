@@ -2,8 +2,8 @@ import { z } from "zod";
 import { TASK_PRIORITIES } from "../types/task.js";
 
 export const createTaskSchema = z.object({
-  title: z.string().min(1),
-  description: z.string().nullable(),
+  title: z.string().min(3),
+  description: z.string().optional(),
   priority: z.enum(TASK_PRIORITIES).default("low"),
   completed: z.boolean().default(false),
 });

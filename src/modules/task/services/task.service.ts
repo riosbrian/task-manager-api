@@ -21,12 +21,16 @@ function mapToResponse(doc: TaskDocument) {
 export function taskService(): TaskRepository {
   return {
     async create(input: CreateTaskInput): Promise<Task> {
-      const newTask = await TaskModel.create(input);
+      const newTask = await TaskModel.create({
+        ...input,
+        description: input.description || null,
+      });
       return mapToResponse(newTask);
     },
 
     async find(): Promise<Task[]> {
-      return await TaskModel.find({});
+      const tasks = await TaskModel.find({});
+      return tasks.length > 0 ? tasks.map((task) => mapToResponse(task)) : [];
     },
 
     async findByIdAndUpdate(id: string, input: UpdateTaskInput): Promise<Task> {
@@ -36,14 +40,15 @@ export function taskService(): TaskRepository {
         {
           returnDocument: "after",
         },
-      ).lean();
+      );
       if (!updatedTask) throw new Error("Not found task error");
       return mapToResponse(updatedTask);
     },
 
-    async findByIdAndDelete(id: string): Promise<void> {
-      const deletedTask = await TaskModel.findByIdAndDelete(id).lean();
+    async findByIdAndDelete(id: string): Promise<Task> {
+      const deletedTask = await TaskModel.findByIdAndDelete(id);
       if (!deletedTask) throw new Error("Not found task error");
+      return mapToResponse(deletedTask);
     },
   };
 }

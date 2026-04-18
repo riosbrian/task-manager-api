@@ -1,8 +1,11 @@
-import mongoose, { Schema, Types, type InferSchemaType } from "mongoose";
+import mongoose, {
+  Schema,
+  type HydratedDocument,
+  type InferSchemaType,
+} from "mongoose";
 import { TASK_PRIORITIES } from "../types/task.js";
 
 const taskSchema = new Schema({
-  _id: { type: Schema.Types.ObjectId, required: true },
   title: { type: String, required: true },
   description: { type: String, default: null },
   priority: {
@@ -13,8 +16,6 @@ const taskSchema = new Schema({
   completed: { type: Boolean, default: false },
 });
 
-export type TaskDocument = InferSchemaType<typeof taskSchema> & {
-  _id: Types.ObjectId;
-};
+export type TaskDocument = HydratedDocument<InferSchemaType<typeof taskSchema>>;
 
 export const TaskModel = mongoose.model("Task", taskSchema);
