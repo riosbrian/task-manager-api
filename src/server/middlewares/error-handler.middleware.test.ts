@@ -37,4 +37,19 @@ describe("Global Error Handler Middleware", () => {
       message: "Custom App Error",
     });
   });
+
+  it("should capture mongodb errors", async () => {
+    app.get("/mongodb-error", (req, res) => {
+      const mongoerror = new Error("MongoDb error");
+      mongoerror.name = "CastError";
+      throw mongoerror;
+    });
+
+    app.use(errorHandler);
+
+    const response = await request(app).get("/mongodb-error");
+    console.log(response.status);
+    expect(response.status).toBe(400);
+    expect(response.body.message).toContain("Invalid");
+  });
 });

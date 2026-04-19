@@ -6,7 +6,7 @@ import mongoose, {
 import { TASK_PRIORITIES } from "../types/task.js";
 
 const taskSchema = new Schema({
-  title: { type: String, required: true },
+  title: { type: String, required: true, unique: true },
   description: { type: String, default: null },
   priority: {
     type: String,

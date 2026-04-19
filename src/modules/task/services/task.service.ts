@@ -6,6 +6,7 @@ import type {
   CreateTaskInput,
   UpdateTaskInput,
 } from "@/modules/task/schemas/task.schema.js";
+import { TaskError } from "@/modules/task/types/task.errors.js";
 import type { Task, TaskRepository } from "@/modules/task/types/task.js";
 
 function mapToResponse(doc: TaskDocument) {
@@ -41,13 +42,13 @@ export function taskService(): TaskRepository {
           returnDocument: "after",
         },
       );
-      if (!updatedTask) throw new Error("Not found task error");
+      if (!updatedTask) throw TaskError.notFound();
       return mapToResponse(updatedTask);
     },
 
     async findByIdAndDelete(id: string): Promise<Task> {
       const deletedTask = await TaskModel.findByIdAndDelete(id);
-      if (!deletedTask) throw new Error("Not found task error");
+      if (!deletedTask) throw TaskError.notFound();
       return mapToResponse(deletedTask);
     },
   };
