@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { authService } from "@/modules/accounts/services/auth.service.js";
 import { userService } from "@/modules/accounts/services/user.service.js";
+import { setAuthCookies } from "@/server/utils/cookie.util.js";
 
 const service = authService(userService());
 
@@ -13,10 +14,8 @@ export async function register(req: Request, res: Response) {
 }
 
 export async function login(req: Request, res: Response) {
-  const tokens = await service.login(req.data);
-
-  res.status(200).json({
+  const { accessToken, refreshToken } = await service.login(req.data);
+  setAuthCookies(res, accessToken, refreshToken).json({
     status: "success",
-    data: tokens,
   });
 }

@@ -30,6 +30,7 @@ declare global {
   namespace Express {
     interface Request {
       data?: any;
+      user?: any;
     }
   }
 }

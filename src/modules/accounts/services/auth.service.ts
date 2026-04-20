@@ -7,7 +7,7 @@ import type {
   RegisterUserInput,
   LoginUserInput,
 } from "@/modules/accounts/schemas/auth.schema.js";
-import { AccountError } from "@/modules/accounts/types/accounts.errors.js";
+import { AuthError } from "@/modules/accounts/types/auth.errors.js";
 import {
   comparePassword,
   hashPassword,
@@ -29,7 +29,7 @@ export function authService(repository: UserRepository): AuthRepository {
         by: "email",
         value: input.email,
       });
-      if (userExist) throw AccountError.userAlreadyRegistered();
+      if (userExist) throw AuthError.userAlreadyRegistered();
 
       const hashedPassword = await hashPassword(input.password);
 
@@ -45,13 +45,13 @@ export function authService(repository: UserRepository): AuthRepository {
         value: input.email,
       });
 
-      if (!user) throw AccountError.notFoundUser();
+      if (!user) throw AuthError.notFoundUser();
 
       const isPasswordValid = await comparePassword(
         user.password,
         input.password,
       );
-      if (!isPasswordValid) throw AccountError.invalidCredentials();
+      if (!isPasswordValid) throw AuthError.invalidCredentials();
 
       const { accessToken, refreshToken } = await signAuthTokens({
         userId: user.id,
