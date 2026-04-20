@@ -25,20 +25,25 @@ export async function signToken<T extends object>(
   type: TokenType,
 ): Promise<string> {
   const options = getSignOptions(type);
-  const token = jwt.sign(payload, envs.JWT_SECRET, options);
-  return token;
+  return new Promise((resolve, reject) => {
+    jwt.sign(payload, envs.JWT_SECRET, options, (err, token) => {
+      if (err) return reject(err);
+      resolve(token as string);
+    });
+  });
 }
 
 export async function verifyToken(token: string): Promise<JwtPayload | string> {
-  try {
-    const payload = jwt.verify(token, envs.JWT_SECRET);
-    return payload;
-  } catch (error) {
-    if (error instanceof Error) {
-      if (error.name === "TokenExpiredError") throw TokenError.tokenExpired();
-      if (error.name === "JsonWebTokenError") throw TokenError.invalidToken();
-    }
-
-    throw TokenError.invalidToken();
-  }
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, envs.JWT_SECRET, (error, payload) => {
+      if (error) {
+        if (error.name === "TokenExpiredError")
+          return reject(TokenError.tokenExpired());
+        if (error.name === "JsonWebTokenError")
+          return reject(TokenError.invalidToken());
+        return reject(TokenError.invalidToken());
+      }
+      resolve(payload!);
+    });
+  });
 }

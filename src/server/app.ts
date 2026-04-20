@@ -3,11 +3,13 @@ import cors from "cors";
 import appRouter from "@/server/routes/app.router.js";
 import { errorHandler } from "@/server/middlewares/error-handler.middleware.js";
 import { connectMongoDB } from "./db/mongodb.connection.js";
-
+import cookieParser from "cookie-parser";
 const app: Express = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.use("/api/v1", appRouter);
 app.use(errorHandler);
@@ -24,6 +26,8 @@ export async function run(port: number) {
     console.log(`Server running on port ${port}`);
   });
 }
+
+export default app;
 
 //
 declare global {
