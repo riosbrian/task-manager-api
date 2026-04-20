@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { verifyToken } from "@/modules/accounts/utils/jwt.util.js";
+import { verifyToken } from "@/shared/utils/jwt.util.js";
 import { getCookie } from "@/server/utils/cookie.util.js";
 
 export function authentication(

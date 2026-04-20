@@ -27,12 +27,4 @@ export class AuthError extends AppError {
   static requireAuth() {
     return new AuthError("Access denied. Authentication required", 401);
   }
-
-  static invalidToken() {
-    return new AuthError("Invalid token", 401);
-  }
-
-  static tokenExpired() {
-    return new AuthError("Token expired", 401);
-  }
 }

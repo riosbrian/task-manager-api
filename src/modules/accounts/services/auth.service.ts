@@ -12,7 +12,7 @@ import {
   comparePassword,
   hashPassword,
 } from "@/modules/accounts/utils/password-hasher.util.js";
-import { signToken } from "@/modules/accounts/utils/jwt.util.js";
+import { signToken } from "@/shared/utils/jwt.util.js";
 
 type AuthPayload = { userId: string };
 

@@ -1,5 +1,5 @@
 import { envs } from "@/config/envs.js";
-import { AuthError } from "@/modules/accounts/types/auth.errors.js";
+import { TokenError } from "./token.errors.js";
 import jwt, { type JwtPayload, type SignOptions } from "jsonwebtoken";
 
 const TOKEN_TYPES = {
@@ -25,20 +25,20 @@ export async function signToken<T extends object>(
   type: TokenType,
 ): Promise<string> {
   const options = getSignOptions(type);
-  const token = jwt.sign(payload, envs.MONGO_DB_NAME, options);
+  const token = jwt.sign(payload, envs.JWT_SECRET, options);
   return token;
 }
 
 export async function verifyToken(token: string): Promise<JwtPayload | string> {
   try {
-    const payload = jwt.verify(token, envs.MONGO_DB_NAME);
+    const payload = jwt.verify(token, envs.JWT_SECRET);
     return payload;
   } catch (error) {
     if (error instanceof Error) {
-      if (error.name === "TokenExpiredError") throw AuthError.tokenExpired();
-      if (error.name === "JsonWebTokenError") throw AuthError.invalidToken();
+      if (error.name === "TokenExpiredError") throw TokenError.tokenExpired();
+      if (error.name === "JsonWebTokenError") throw TokenError.invalidToken();
     }
 
-    throw AuthError.invalidToken();
+    throw TokenError.invalidToken();
   }
 }
