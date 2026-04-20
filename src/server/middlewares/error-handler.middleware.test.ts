@@ -48,7 +48,6 @@ describe("Global Error Handler Middleware", () => {
     app.use(errorHandler);
 
     const response = await request(app).get("/mongodb-error");
-    console.log(response.status);
     expect(response.status).toBe(400);
     expect(response.body.message).toContain("Invalid");
   });

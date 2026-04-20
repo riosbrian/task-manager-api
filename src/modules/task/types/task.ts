@@ -21,8 +21,8 @@ export type Task = {
 };
 
 export interface TaskRepository {
-  create: (input: CreateTaskInput) => Promise<Task>;
-  find: () => Promise<Task[]>;
+  create: (input: CreateTaskInput & { userId: string }) => Promise<Task>;
+  find: (userId: string) => Promise<Task[]>;
   findByIdAndUpdate: (id: string, input: UpdateTaskInput) => Promise<Task>;
   findByIdAndDelete: (id: string) => Promise<Task>;
 }

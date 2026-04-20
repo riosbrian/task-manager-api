@@ -4,7 +4,7 @@ import { taskService } from "@/modules/task/services/task.service.js";
 const service = taskService();
 
 export async function getTask(req: Request, res: Response) {
-  const taks = await service.find();
+  const taks = await service.find(req.user.userId);
   res.status(200).json({
     status: "success",
     data: taks,
@@ -12,7 +12,10 @@ export async function getTask(req: Request, res: Response) {
 }
 
 export async function addTask(req: Request, res: Response) {
-  const newTask = await service.create(req.body);
+  const newTask = await service.create({
+    ...req.body,
+    userId: req.user.userId,
+  });
   res.status(201).json({
     status: "success",
     data: newTask,
