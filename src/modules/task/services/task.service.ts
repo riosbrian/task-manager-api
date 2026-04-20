@@ -21,7 +21,7 @@ function mapToResponse(doc: TaskDocument) {
 
 export function taskService(): TaskRepository {
   return {
-    async create(input: CreateTaskInput): Promise<Task> {
+    async create(input: CreateTaskInput & { userId: string }): Promise<Task> {
       const newTask = await TaskModel.create({
         ...input,
         description: input.description || null,
@@ -29,8 +29,8 @@ export function taskService(): TaskRepository {
       return mapToResponse(newTask);
     },
 
-    async find(): Promise<Task[]> {
-      const tasks = await TaskModel.find({});
+    async find(userId: string): Promise<Task[]> {
+      const tasks = await TaskModel.find({ userId });
       return tasks.length > 0 ? tasks.map((task) => mapToResponse(task)) : [];
     },
 

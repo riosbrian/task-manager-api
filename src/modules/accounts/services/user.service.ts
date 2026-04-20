@@ -24,7 +24,7 @@ export function userService(): UserRepository {
     },
 
     async findByUnique(criteria: Criteria): Promise<User | null> {
-      const user = await UserModel.findOne({ criteria });
+      const user = await UserModel.findOne({ [criteria.by]: criteria.value });
       if (!user) return null;
       return mapToResponse(user);
     },

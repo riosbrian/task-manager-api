@@ -14,6 +14,7 @@ const taskSchema = new Schema({
     default: TASK_PRIORITIES.MEDIUM,
   },
   completed: { type: Boolean, default: false },
+  userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
 });
 
 export type TaskDocument = HydratedDocument<InferSchemaType<typeof taskSchema>>;
