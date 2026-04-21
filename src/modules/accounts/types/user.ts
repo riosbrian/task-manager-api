@@ -1,5 +1,3 @@
-import type { RegisterUserInput } from "@/modules/accounts/schemas/auth.schema.js";
-
 export type User = {
   id: string;
   username: string;
@@ -14,8 +12,3 @@ export type Criteria = {
   by: UniqueUserKeys;
   value: string;
 };
-
-export interface UserRepository {
-  create: (user: RegisterUserInput) => Promise<User>;
-  findByUnique: (criteria: Criteria) => Promise<User | null>;
-}

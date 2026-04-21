@@ -1,63 +1,69 @@
+import { AuthError } from "@/modules/accounts/errors/auth.errors.js";
 import type {
-  AuthRepository,
-  AuthTokens,
-} from "@/modules/accounts/types/auth.js";
-import type { UserRepository } from "@/modules/accounts/types/user.js";
-import type {
-  RegisterUserInput,
   LoginUserInput,
+  RegisterUserInput,
 } from "@/modules/accounts/schemas/auth.schema.js";
-import { AuthError } from "@/modules/accounts/types/auth.errors.js";
+import type {
+  AuthService,
+  AuthTokens,
+} from "@/modules/accounts/types/auth.types.js";
+import type {
+  User,
+  UserRepository,
+} from "@/modules/accounts/types/user.types.js";
 import {
   comparePassword,
   hashPassword,
 } from "@/modules/accounts/utils/password-hasher.util.js";
 import { signToken } from "@/shared/utils/jwt.util.js";
 
-type AuthPayload = { userId: string };
+export class AuthServiceImpl implements AuthService {
+  constructor(private readonly repository: UserRepository) {}
 
-async function signAuthTokens(payload: AuthPayload) {
-  const accessToken = await signToken(payload, "accessToken");
-  const refreshToken = await signToken(payload, "refreshToken");
-  return { accessToken, refreshToken };
-}
+  async register(input: RegisterUserInput): Promise<void> {
+    await this.verifyUserIsNotRegistered(input.email);
 
-export function authService(repository: UserRepository): AuthRepository {
-  return {
-    async register(input: RegisterUserInput): Promise<void> {
-      const userExist = await repository.findByUnique({
-        by: "email",
-        value: input.email,
-      });
-      if (userExist) throw AuthError.userAlreadyRegistered();
+    const hashedPassword = await hashPassword(input.password);
 
-      const hashedPassword = await hashPassword(input.password);
+    await this.repository.save({
+      ...input,
+      password: hashedPassword,
+    });
+  }
 
-      await repository.create({
-        ...input,
-        password: hashedPassword,
-      });
-    },
+  async login(input: LoginUserInput): Promise<AuthTokens> {
+    const user = await this.getAuthenticatedUser(input.email, input.password);
+    const authTokens = await this.signAuthTokens({ userId: user.id });
+    return authTokens;
+  }
 
-    async login(input: LoginUserInput): Promise<AuthTokens> {
-      const user = await repository.findByUnique({
-        by: "email",
-        value: input.email,
-      });
+  private async verifyUserIsNotRegistered(email: string): Promise<void> {
+    const user = await this.repository.findByEmail(email);
+    if (user) throw AuthError.userAlreadyRegistered();
+  }
 
-      if (!user) throw AuthError.notFoundUser();
+  private async getAuthenticatedUser(
+    email: string,
+    hashedPassword: string,
+  ): Promise<User> {
+    const user = await this.repository.findByEmail(email);
 
-      const isPasswordValid = await comparePassword(
-        user.password,
-        input.password,
-      );
-      if (!isPasswordValid) throw AuthError.invalidCredentials();
+    if (!user || !(await comparePassword(hashedPassword, user.password))) {
+      throw AuthError.invalidCredentials();
+    }
 
-      const { accessToken, refreshToken } = await signAuthTokens({
-        userId: user.id,
-      });
+    return user;
+  }
 
-      return { accessToken, refreshToken };
-    },
-  };
+  private async signAuthTokens(payload: { userId: string }) {
+    const accessToken = await signToken(payload, "accessToken");
+    const refreshToken = await signToken(payload, "refreshToken");
+
+    return { accessToken, refreshToken };
+  }
+
+  // private sanitizeResponse(user: User): Omit<User, "password"> {
+  //   const { password, ...cleanUser } = user;
+  //   return cleanUser;
+  // }
 }
