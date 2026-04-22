@@ -1,6 +1,5 @@
 import {
   createTaskSchema,
-  taskParamsSchema,
   updateTaskSchema,
 } from "@/modules/task/schemas/task.schema.js";
 import {
@@ -25,7 +24,6 @@ taskRouter
 
 taskRouter
   .route("/:id")
-  .all(schemaValidator(taskParamsSchema, "params"))
   .patch(schemaValidator(updateTaskSchema), updateTask)
   .delete(deleteTask);
 

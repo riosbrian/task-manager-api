@@ -18,11 +18,20 @@ export type Task = {
   description: string | null;
   priority: TaskPriority;
   completed: boolean;
+  userId: string;
 };
 
 export interface TaskRepository {
-  create: (input: CreateTaskInput & { userId: string }) => Promise<Task>;
-  find: (userId: string) => Promise<Task[]>;
-  findByIdAndUpdate: (id: string, input: UpdateTaskInput) => Promise<Task>;
-  findByIdAndDelete: (id: string) => Promise<Task>;
+  save(data: CreateTaskInput & { userId: string }): Promise<Task>;
+  findAllByUserId(userId: string): Promise<Task[]>;
+  findById(id: string): Promise<Task | null>;
+  update(id: string, data: UpdateTaskInput): Promise<Task | null>;
+  delete(id: string): Promise<Task | null>;
+}
+
+export interface TaskService {
+  createNewTask(userId: string, input: CreateTaskInput): Promise<Task>;
+  getUserTasks(userId: string): Promise<Task[]>;
+  updateTask(taskId: string, data: UpdateTaskInput): Promise<Task>;
+  deleteTask(taskId: string): Promise<Task>;
 }

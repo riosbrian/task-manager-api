@@ -1,7 +1,9 @@
 import type { Request, Response } from "express";
 import { AuthService } from "@/modules/accounts/services/auth.service.js";
-import { createUserRepository } from "@/modules/accounts/repositories/user.repository.js";
-import { clearAuthCookies, setAuthCookies } from "@/server/utils/cookie.util.js";
+import {
+  clearAuthCookies,
+  setAuthCookies,
+} from "@/server/utils/cookie.util.js";
 
 const userRepository = createUserRepository();
 const authService = new AuthService(userRepository);
