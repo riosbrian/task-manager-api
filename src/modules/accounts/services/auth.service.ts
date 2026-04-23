@@ -44,11 +44,11 @@ export class AuthServiceImpl implements AuthService {
 
   private async getAuthenticatedUser(
     email: string,
-    hashedPassword: string,
+    password: string,
   ): Promise<User> {
     const user = await this.repository.findByEmail(email);
 
-    if (!user || !(await comparePassword(hashedPassword, user.password))) {
+    if (!user || !(await comparePassword(user.password, password))) {
       throw AuthError.invalidCredentials();
     }
 
@@ -58,7 +58,6 @@ export class AuthServiceImpl implements AuthService {
   private async signAuthTokens(payload: { userId: string }) {
     const accessToken = await signToken(payload, "accessToken");
     const refreshToken = await signToken(payload, "refreshToken");
-
     return { accessToken, refreshToken };
   }
 
