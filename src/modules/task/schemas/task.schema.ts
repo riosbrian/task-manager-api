@@ -21,5 +21,9 @@ export const updateTaskSchema = z.object({
   body: taskSchema.partial(),
 });
 
+export const deleteSchema = z.object({
+  params: taskParams,
+});
+
 export type CreateTaskInput = z.infer<typeof taskSchema>;
 export type UpdateTaskInput = typeof taskSchema.partial;
