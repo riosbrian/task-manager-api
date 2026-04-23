@@ -1,15 +1,23 @@
 import { z } from "zod";
 
+const credentialsSchema = z.object({
+  email: z.email({ error: "Invalid email format" }),
+  password: z.string().min(8, { error: "Password must be at least 8 characters" }),
+});
+
+const registerSchema = credentialsSchema.merge(
+  z.object({
+    username: z.string().min(3, { error: "Username must be at least 3 characters" }),
+  })
+);
+
 export const loginSchema = z.object({
-  email: z.email("invalid email format"),
-  password: z.string().min(8, "password must be greater than 8 characters"),
+  body: credentialsSchema,
 });
 
-export const registerSchema = loginSchema.extend({
-  username: z
-    .string("username is mandatory")
-    .min(3, "username must be greather than 3 characters"),
+export const registerSchema = z.object({
+  body: registerSchemaBase,
 });
 
-export type RegisterUserInput = z.infer<typeof registerSchema>;
-export type LoginUserInput = z.infer<typeof loginSchema>;
+export type LoginInput = z.infer<typeof credentialsSchema>;
+export type RegisterInput = z.infer<typeof registerSchema>;

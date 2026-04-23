@@ -14,7 +14,8 @@ export async function getTask(req: Request, res: Response) {
 }
 
 export async function addTask(req: Request, res: Response) {
-  const newTask = await taskService.createNewTask(req.user.userId, req.body);
+  const data = res.locals.validated.body;
+  const newTask = await taskService.createNewTask(req.user.userId, data);
   res.status(201).json({
     status: "success",
     data: newTask,

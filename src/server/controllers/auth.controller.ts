@@ -6,7 +6,7 @@ import {
 import type { Request, Response } from "express";
 
 export async function register(req: Request, res: Response) {
-  await authService.register(req.data);
+  await authService.register(res.locals.validated.body);
 
   res.status(201).json({
     status: "success",

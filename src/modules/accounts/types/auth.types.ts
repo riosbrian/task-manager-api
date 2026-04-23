@@ -1,7 +1,4 @@
-import type {
-  LoginUserInput,
-  RegisterUserInput,
-} from "@/modules/accounts/schemas/auth.schema.js";
+import type { LoginInput, RegisterInput } from "@/modules/accounts/schemas/auth.schema.js";
 
 export type AuthTokens = {
   accessToken: string;
@@ -9,6 +6,6 @@ export type AuthTokens = {
 };
 
 export interface AuthService {
-  register(input: RegisterUserInput): Promise<void>;
-  login(input: LoginUserInput): Promise<AuthTokens>;
+  register(input: RegisterInput): Promise<void>;
+  login(input: LoginInput): Promise<AuthTokens>;
 }

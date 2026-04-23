@@ -35,7 +35,9 @@ export class TaskMongoRepository implements TaskRepository {
   }
 
   async update(id: string, data: UpdateTaskInput): Promise<Task | null> {
-    const doc = await TaskModel.findByIdAndUpdate(id, data, { new: true });
+    const doc = await TaskModel.findByIdAndUpdate(id, data, {
+      returnDocument: "after",
+    });
     return doc ? mapToResponse(doc) : null;
   }
 

@@ -1,7 +1,7 @@
 import { AuthError } from "@/modules/accounts/errors/auth.errors.js";
 import type {
-  LoginUserInput,
-  RegisterUserInput,
+  LoginInput,
+  RegisterInput,
 } from "@/modules/accounts/schemas/auth.schema.js";
 import type {
   AuthService,
@@ -20,7 +20,7 @@ import { signToken } from "@/shared/utils/jwt.util.js";
 export class AuthServiceImpl implements AuthService {
   constructor(private readonly repository: UserRepository) {}
 
-  async register(input: RegisterUserInput): Promise<void> {
+  async register(input: RegisterInput): Promise<void> {
     await this.verifyUserIsNotRegistered(input.email);
 
     const hashedPassword = await hashPassword(input.password);
@@ -31,7 +31,7 @@ export class AuthServiceImpl implements AuthService {
     });
   }
 
-  async login(input: LoginUserInput): Promise<AuthTokens> {
+  async login(input: LoginInput): Promise<AuthTokens> {
     const user = await this.getAuthenticatedUser(input.email, input.password);
     const authTokens = await this.signAuthTokens({ userId: user.id });
     return authTokens;
