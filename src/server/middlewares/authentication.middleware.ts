@@ -10,7 +10,10 @@ export async function authentication(
   const accessToken = getCookie(req, "accessToken");
   if (accessToken) {
     const decoded = await verifyToken(accessToken);
-    req.user = decoded;
+    res.locals.validated = {
+      ...res.locals.validated,
+      user: decoded,
+    };
   }
   next();
 }

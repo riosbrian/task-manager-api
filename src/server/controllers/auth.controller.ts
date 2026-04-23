@@ -14,7 +14,9 @@ export async function register(req: Request, res: Response) {
 }
 
 export async function login(req: Request, res: Response) {
-  const { accessToken, refreshToken } = await authService.login(req.data);
+  const { accessToken, refreshToken } = await authService.login(
+    res.locals.validated.body,
+  );
   setAuthCookies(res, accessToken, refreshToken!).json({
     status: "success",
   });

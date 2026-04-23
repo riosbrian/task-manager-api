@@ -18,7 +18,10 @@ export function schemaValidator<T extends ZodObject>(schema: T) {
       throw new AppError(message, 400);
     }
 
-    res.locals.validated = result.data;
+    res.locals.validated = {
+      ...res.locals.validated,
+      ...result.data,
+    };
     next();
   };
 }

@@ -1,6 +1,6 @@
 import {
-  loginSchema,
-  registerSchema,
+  loginBodySchema,
+  registerBodySchema,
 } from "@/modules/accounts/schemas/auth.schema.js";
 import {
   login,
@@ -17,8 +17,8 @@ const authRouter: Router = Router();
 
 authRouter.use(authentication);
 authRouter
-  .post("/register", isGuest, schemaValidator(registerSchema), register)
-  .post("/login", isGuest, schemaValidator(loginSchema), login)
-  .post("/logout", requireAuth, schemaValidator(loginSchema), logout);
+  .post("/register", isGuest, schemaValidator(registerBodySchema), register)
+  .post("/login", isGuest, schemaValidator(loginBodySchema), login)
+  .post("/logout", requireAuth, logout);
 
 export default authRouter;

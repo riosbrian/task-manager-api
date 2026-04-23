@@ -10,8 +10,8 @@ export async function getTask(req: Request, res: Response) {
 }
 
 export async function addTask(req: Request, res: Response) {
-  const data = res.locals.validated.body;
-  const newTask = await taskService.createNewTask(req.user.userId, data);
+  const { user, body } = res.locals.validated;
+  const newTask = await taskService.createNewTask(user.userId, body);
   res.status(201).json({
     status: "success",
     data: newTask,
@@ -19,7 +19,8 @@ export async function addTask(req: Request, res: Response) {
 }
 
 export async function updateTask(req: Request, res: Response) {
-  const updatedTask = await taskService.updateTask(req.data, req.body);
+  const { params, body } = res.locals.validated;
+  const updatedTask = await taskService.updateTask(params.id, body);
   res.status(200).json({
     status: "success",
     data: updatedTask,
@@ -27,7 +28,8 @@ export async function updateTask(req: Request, res: Response) {
 }
 
 export async function deleteTask(req: Request, res: Response) {
-  const deleteTask = await taskService.deleteTask(req.data);
+  const { params } = res.locals.validated;
+  const deleteTask = await taskService.deleteTask(params.id);
   res.status(200).json({
     status: "success",
     data: deleteTask,
