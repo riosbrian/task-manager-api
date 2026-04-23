@@ -1,9 +1,5 @@
-import { TaskMongoRepository } from "@/modules/task/repositories/task-mongo.repository.js";
-import { TaskServiceImpl } from "@/modules/task/services/task.service.js";
+import { taskService } from "@/server/di.js";
 import type { Request, Response } from "express";
-
-const taskRepository = new TaskMongoRepository();
-const taskService = new TaskServiceImpl(taskRepository);
 
 export async function getTask(req: Request, res: Response) {
   const taks = await taskService.getUserTasks(req.user.userId);
